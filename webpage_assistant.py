@@ -72,8 +72,8 @@ pubmed_assistant = Assistant(
     name="pubmed assistant",
     tools=[PubmedTools()], 
     role='search pubmed for each item in a list',
-    debug_mode=True, 
-    show_tool_calls=True
+    debug_mode=False, 
+    show_tool_calls=False
 )
 
 ingredient_fetcher = Assistant(
@@ -81,8 +81,8 @@ ingredient_fetcher = Assistant(
     tools=[WebPageTool()],
     name="ingredient fetcher",
     role="fetch the ingredients from a webpage",
-    debug_mode=True, 
-    show_tool_calls=True,
+    debug_mode=False, 
+    show_tool_calls=False,
     expected_output="return the ingredients list as a json in the format {'ingredients': ['ingredient1', 'ingredient2']}"
 )
 
@@ -125,8 +125,10 @@ assistant = Assistant(
             "Use the pubmed assistant to search for articles on each of the ingredients you found.\n",
             "Return the report on the ingredients based on the information you found at pubmed in the <report_format> "
         ],
-    show_tool_calls=True,
-    debug_mode=True
+    show_tool_calls=False,
+    debug_mode=False,
+    markdown=True
+
 )
 
 app = FastAPI()
@@ -137,7 +139,7 @@ class SupplementRequest(BaseModel):
 @app.post("/analyze_supplement")
 async def analyze_supplement(request: SupplementRequest):
     try:
-        report = assistant.run(request.url)
+        report = assistant.run(request.url, stream=False)
         # Join the report strings if it's a list
         if isinstance(report, list):
             report = ''.join(report)
