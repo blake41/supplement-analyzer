@@ -1,0 +1,6 @@
+httpx
+beautifulsoup4
+phidata
+groq
+openai
+requests
