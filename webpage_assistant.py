@@ -12,6 +12,8 @@ from phi.tools import Toolkit
 from phi.assistant import Assistant
 from phi.tools.pubmed import PubmedTools
 
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 class WebPageTool(Toolkit):
     def __init__(self):
@@ -90,6 +92,7 @@ assistant = Assistant(
     team=[ingredient_fetcher, pubmed_assistant],
     expected_output=dedent(
     """\
+    Return the following report as a single string:
     <report_format>
     This supplement {supplement name} has the following ingredients
     ## {ingredients}
@@ -125,4 +128,27 @@ assistant = Assistant(
     show_tool_calls=True,
     debug_mode=True
 )
-assistant.cli_app(markdown=True)
+
+app = FastAPI()
+
+class SupplementRequest(BaseModel):
+    url: str
+
+@app.post("/analyze_supplement")
+async def analyze_supplement(request: SupplementRequest):
+    try:
+        report = assistant.run(request.url)
+        # Join the report strings if it's a list
+        if isinstance(report, list):
+            report = ''.join(report)
+        return {"report": report}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Remove or comment out the CLI app line
+# assistant.cli_app(markdown=True)
+
+# Add this at the end of the file
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

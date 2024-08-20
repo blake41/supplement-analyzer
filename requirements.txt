@@ -4,3 +4,5 @@ phidata
 groq
 openai
 requests
+fastapi
+uvicorn
