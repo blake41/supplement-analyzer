@@ -1,59 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supplement Analyzer</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            color: #333;
-        }
-        form {
-            margin-bottom: 20px;
-        }
-        input[type="text"] {
-            width: 70%;
-            padding: 10px;
-        }
-        input[type="submit"] {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Supplement Analyzer</h1>
-    <form method="post">
-        <input type="text" name="url" placeholder="Enter supplement URL" required {% if url %}value="{{ url }}"{% endif %}>
-        <input type="submit" value="Analyze">
-    </form>
-    {% if show_rerun %}
-    <form method="post">
-        <input type="hidden" name="url" value="{{ url }}">
-        <input type="submit" value="Rerun Report">
-    </form>
-    {% endif %}
-    {% if url %}
-    <p><a href="/list_reports?url={{ url }}" target="_blank">View all reports for this URL</a></p>
-    {% endif %}
-    {% if result %}
-    <h2>Analysis Result:</h2>
-    {{ result | safe }}
-    {% endif %}
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8 text-blue-600">Supplement Analyzer</h1>
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <form method="post" class="mb-4">
+                <div class="mb-4">
+                    <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" name="url" placeholder="Enter supplement URL" required {% if url %}value="{{ url }}"{% endif %}>
+                </div>
+                <div class="flex items-center justify-between">
+                    <input class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="Analyze">
+                    {% if show_rerun %}
+                    <button form="rerun-form" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">Rerun Report</button>
+                    {% endif %}
+                </div>
+            </form>
+            {% if show_rerun %}
+            <form id="rerun-form" method="post" class="hidden">
+                <input type="hidden" name="url" value="{{ url }}">
+            </form>
+            {% endif %}
+            {% if url %}
+            <div class="mt-4">
+                <a href="/list_reports?url={{ url }}" target="_blank" class="text-blue-500 hover:text-blue-800">View all reports for this URL</a>
+            </div>
+            {% endif %}
+        </div>
+        {% if result %}
+        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Analysis Result:</h2>
+            <div class="prose max-w-none">
+                {{ result | safe }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
 </body>
 </html>
