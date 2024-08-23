@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supplement Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Supplement Analyzer</h1>
+    <form method="post">
+        <input type="text" name="url" placeholder="Enter supplement URL" required {% if url %}value="{{ url }}"{% endif %}>
+        <input type="submit" value="Analyze">
+    </form>
+    {% if show_rerun %}
+    <form method="post">
+        <input type="hidden" name="url" value="{{ url }}">
+        <input type="submit" value="Rerun Report">
+    </form>
+    {% endif %}
+    {% if url %}
+    <p><a href="/list_reports?url={{ url }}" target="_blank">View all reports for this URL</a></p>
+    {% endif %}
+    {% if result %}
+    <h2>Analysis Result:</h2>
+    {{ result | safe }}
+    {% endif %}
+</body>
+</html>

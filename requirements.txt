@@ -6,3 +6,4 @@ openai
 requests
 fastapi
 uvicorn
+markdown2
