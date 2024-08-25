@@ -114,6 +114,9 @@ assistant = Assistant(
     ### Research
     {pubmed links in markdown format, e.g. [Study Title](https://pubmed.ncbi.nlm.nih.gov/XXXXX/)}
 
+    ### Sources
+    {list of sources in numbered format, including the PubMed IDs}
+
     ### Summary
     {give a summary of the benefits of the supplements ingredients}
 
@@ -166,6 +169,7 @@ def format_report_html(report: str, url: str) -> str:
     # Add custom styling for specific sections
     html_content = re.sub(r'<h2>Overview</h2>', r'<h2 class="text-xl font-semibold mb-3 mt-6 text-blue-700">Overview</h2>', html_content)
     html_content = re.sub(r'<h2>Research</h2>', r'<h2 class="text-xl font-semibold mb-3 mt-6 text-green-700">Research</h2>', html_content)
+    html_content = re.sub(r'<h2>Sources</h2>', r'<h2 class="text-xl font-semibold mb-3 mt-6 text-indigo-700">Sources</h2>', html_content)
     html_content = re.sub(r'<h2>Summary</h2>', r'<h2 class="text-xl font-semibold mb-3 mt-6 text-purple-700">Summary</h2>', html_content)
     html_content = re.sub(r'<h2>Recommendation</h2>', r'<h2 class="text-xl font-semibold mb-3 mt-6 text-red-700">Recommendation</h2>', html_content)
     
