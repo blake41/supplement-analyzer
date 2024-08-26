@@ -5,17 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supplement Analyzer</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+        .animate-shimmer {
+            animation: shimmer 2s infinite linear;
+            background: linear-gradient(to right, #f6f7f8 8%, #edeef1 18%, #f6f7f8 33%);
+            background-size: 1000px 100%;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-center mb-8 text-blue-600">Supplement Analyzer</h1>
         <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-            <form method="post" class="mb-4">
+            <form id="analyze-form" method="post" class="mb-4">
                 <div class="mb-4">
                     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" type="text" name="url" placeholder="Enter supplement URL" required {% if url %}value="{{ url }}"{% endif %}>
                 </div>
                 <div class="flex items-center justify-between">
-                    <input class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="Analyze">
+                    <input id="analyze-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" value="Analyze">
                     {% if show_rerun %}
                     <button form="rerun-form" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">Rerun Report</button>
                     {% endif %}
@@ -32,8 +47,22 @@
             </div>
             {% endif %}
         </div>
+        <div id="report-placeholder" class="hidden bg-white shadow-md rounded px-8 pt-6 pb-8">
+            <div class="animate-shimmer h-8 w-3/4 mb-4 bg-gray-200 rounded"></div>
+            <div class="animate-shimmer h-4 w-full mb-2 bg-gray-200 rounded"></div>
+            <div class="animate-shimmer h-4 w-5/6 mb-2 bg-gray-200 rounded"></div>
+            <div class="animate-shimmer h-4 w-4/6 mb-4 bg-gray-200 rounded"></div>
+            <div class="animate-shimmer h-6 w-1/4 mb-4 bg-gray-200 rounded"></div>
+            <div class="animate-shimmer h-4 w-full mb-2 bg-gray-200 rounded"></div>
+            <div class="animate-shimmer h-4 w-5/6 mb-2 bg-gray-200 rounded"></div>
+            <div class="animate-shimmer h-4 w-4/6 mb-4 bg-gray-200 rounded"></div>
+            <div class="animate-shimmer h-6 w-1/4 mb-4 bg-gray-200 rounded"></div>
+            <div class="animate-shimmer h-4 w-full mb-2 bg-gray-200 rounded"></div>
+            <div class="animate-shimmer h-4 w-5/6 mb-2 bg-gray-200 rounded"></div>
+            <div class="animate-shimmer h-4 w-4/6 bg-gray-200 rounded"></div>
+        </div>
         {% if result %}
-        <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+        <div id="result" class="bg-white shadow-md rounded px-8 pt-6 pb-8">
             <h2 class="text-2xl font-bold mb-4 text-gray-800">Analysis Result:</h2>
             <div class="prose max-w-none">
                 {{ result | safe }}
@@ -41,5 +70,29 @@
         </div>
         {% endif %}
     </div>
+    <script>
+        document.getElementById('analyze-form').addEventListener('submit', function() {
+            document.getElementById('report-placeholder').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('analyze-button').disabled = true;
+        });
+
+        {% if show_rerun %}
+        document.getElementById('rerun-form').addEventListener('submit', function() {
+            document.getElementById('report-placeholder').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+        });
+        {% endif %}
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('result')) {
+                setTimeout(function() {
+                    document.getElementById('report-placeholder').classList.add('hidden');
+                    document.getElementById('result').classList.remove('hidden');
+                    document.getElementById('analyze-button').disabled = false;
+                }, 1000); // 1 second delay
+            }
+        });
+    </script>
 </body>
 </html>

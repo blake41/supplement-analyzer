@@ -157,16 +157,16 @@ def format_report_html(report: str, url: str) -> str:
     html_content = markdown2.markdown(report)
     
     # Apply Tailwind classes to standard elements
-    html_content = re.sub(r'<h1>(.*?)</h1>', r'<h1 class="text-2xl font-bold mb-4 text-gray-800">\1</h1>', html_content)
-    html_content = re.sub(r'<h2>(.*?)</h2>', r'<h2 class="text-xl font-semibold mb-3 mt-6 text-gray-700">\1</h2>', html_content)
-    html_content = re.sub(r'<h3>(.*?)</h3>', r'<h3 class="text-lg font-medium mb-2 mt-4 text-gray-600">\1</h3>', html_content)
-    html_content = re.sub(r'<p>(.*?)</p>', r'<p class="mb-4 text-gray-600">\1</p>', html_content)
-    html_content = re.sub(r'<ul>(.*?)</ul>', r'<ul class="list-disc pl-5 mb-4 text-gray-600">\1</ul>', html_content)
-    html_content = re.sub(r'<ol>(.*?)</ol>', r'<ol class="list-decimal pl-5 mb-4 text-gray-600">\1</ol>', html_content)
-    html_content = re.sub(r'<li>(.*?)</li>', r'<li class="mb-2">\1</li>', html_content)
+    html_content = re.sub(r'<h1>(.*?)</h1>', r'<h1 class="text-2xl font-bold mb-4 text-black">\1</h1>', html_content)
+    html_content = re.sub(r'<h2>(.*?)</h2>', r'<h2 class="text-xl font-semibold mb-3 mt-6 text-black">\1</h2>', html_content)
+    html_content = re.sub(r'<h3>(.*?)</h3>', r'<h3 class="text-lg font-medium mb-2 mt-4 text-black">\1</h3>', html_content)
+    html_content = re.sub(r'<p>(.*?)</p>', r'<p class="mb-4 text-black">\1</p>', html_content)
+    html_content = re.sub(r'<ul>(.*?)</ul>', r'<ul class="list-disc pl-5 mb-4 text-black">\1</ul>', html_content)
+    html_content = re.sub(r'<ol>(.*?)</ol>', r'<ol class="list-decimal pl-5 mb-4 text-black">\1</ol>', html_content)
+    html_content = re.sub(r'<li>(.*?)</li>', r'<li class="mb-2 text-black">\1</li>', html_content)
     html_content = re.sub(r'<a (.*?)>(.*?)</a>', r'<a class="text-blue-600 hover:text-blue-800 underline" \1>\2</a>', html_content)
     
-    # Add custom styling for specific sections
+    # Add custom styling for specific sections (keeping their distinct colors)
     html_content = re.sub(r'<h2>Overview</h2>', r'<h2 class="text-xl font-semibold mb-3 mt-6 text-blue-700">Overview</h2>', html_content)
     html_content = re.sub(r'<h2>Research</h2>', r'<h2 class="text-xl font-semibold mb-3 mt-6 text-green-700">Research</h2>', html_content)
     html_content = re.sub(r'<h2>Sources</h2>', r'<h2 class="text-xl font-semibold mb-3 mt-6 text-indigo-700">Sources</h2>', html_content)
@@ -176,9 +176,9 @@ def format_report_html(report: str, url: str) -> str:
     # Wrap the content in a basic HTML structure with Tailwind CSS
     html = f"""
     <div class="bg-white shadow-md rounded px-4 sm:px-6 md:px-8 py-6 mb-4 max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold mb-6 text-gray-800">Supplement Analysis Report</h1>
+        <h1 class="text-3xl font-bold mb-6 text-black">Supplement Analysis Report</h1>
         <p class="mb-6"><strong class="font-semibold">Original URL:</strong> <a href="{url}" class="text-blue-600 hover:text-blue-800 underline">{url}</a></p>
-        <div class="prose max-w-none">
+        <div class="prose max-w-none text-black">
             {html_content}
         </div>
     </div>
@@ -231,13 +231,18 @@ async def analyze_supplement_html(url: str = Form(...)):
         saved_path = save_report(url, html_report)
         
         return templates.TemplateResponse("form.html", {
-            "request": Request,  # You'll need to pass the request object here
+            "request": Request,
             "result": html_report,
             "url": url,
             "show_rerun": True
         })
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return templates.TemplateResponse("form.html", {
+            "request": Request,
+            "result": f"<p>Error: {str(e)}</p>",
+            "url": url,
+            "show_rerun": False
+        })
 
 from fastapi.responses import HTMLResponse
 
