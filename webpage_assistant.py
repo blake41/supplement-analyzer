@@ -106,7 +106,7 @@ assistant = Assistant(
     This supplement {supplement name} has the following ingredients
     ## {ingredients}
 
-    ### **Overview**
+    ### **Overview of Supplement Claims**
     {
     Please list the supplements main claims in the form of a list and limit the list to 5 things
     }
@@ -161,9 +161,16 @@ def format_report_html(report: str, url: str) -> str:
     html_content = re.sub(r'<h2>(.*?)</h2>', r'<h2 class="text-xl font-semibold mb-3 mt-6 text-black">\1</h2>', html_content)
     html_content = re.sub(r'<h3>(.*?)</h3>', r'<h3 class="text-lg font-medium mb-2 mt-4 text-black">\1</h3>', html_content)
     html_content = re.sub(r'<p>(.*?)</p>', r'<p class="mb-4 text-black">\1</p>', html_content)
-    html_content = re.sub(r'<ul>(.*?)</ul>', r'<ul class="list-disc pl-5 mb-4 text-black">\1</ul>', html_content)
-    html_content = re.sub(r'<ol>(.*?)</ol>', r'<ol class="list-decimal pl-5 mb-4 text-black">\1</ol>', html_content)
+    
+    # Style unordered lists with dots
+    html_content = re.sub(r'<ul>(.*?)</ul>', r'<ul class="list-disc list-outside pl-5 mb-4 text-black">\1</ul>', html_content, flags=re.DOTALL)
+    
+    # Style ordered lists with numbers
+    html_content = re.sub(r'<ol>(.*?)</ol>', r'<ol class="list-decimal list-outside pl-5 mb-4 text-black">\1</ol>', html_content, flags=re.DOTALL)
+    
+    # Style list items
     html_content = re.sub(r'<li>(.*?)</li>', r'<li class="mb-2 text-black">\1</li>', html_content)
+    
     html_content = re.sub(r'<a (.*?)>(.*?)</a>', r'<a class="text-blue-600 hover:text-blue-800 underline" \1>\2</a>', html_content)
     
     # Add custom styling for specific sections (keeping their distinct colors)
